@@ -60,8 +60,13 @@ class App extends Component {
         <Particles
           className='particles'
           params={particlesOptions} /> 
-        <Navigation />
-        <Logo />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+          <Logo />
+          <Navigation />
+        </div>
+        <div>
+          
+        </div> 
         <div>
           <Rank />
           <ImageLinkForm 
