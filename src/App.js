@@ -33,8 +33,45 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imageUrl: ''
+      imageUrl: '',
+      boxDimensions: {
+
+      },
+      isPending: false
     }
+  }
+
+  calculateFaceLocation = (data) => {
+    console.log(data);
+    console.log(data.outputs[0].data.regions[0].region_info.bounding_box)
+
+    const boundingBox = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const { right_col, left_col, top_row, bottom_row } = boundingBox;
+    const image = document.getElementById('input-image');
+
+    const imageWidth = Number(image.width);
+    const imageHeight = Number(image.height);
+
+    console.log(imageWidth, imageHeight);
+
+    const top = top_row * imageHeight;
+    const bottom = imageHeight - bottom_row * imageHeight;
+    const left = left_col * imageWidth;
+    const right= imageWidth - right_col * imageWidth;
+
+    const boxWidth = imageWidth - left - right;
+    const boxHeight= imageHeight - top - bottom;
+
+    this.setState({
+      boxDimensions: {
+        top,
+        bottom, 
+        left,
+        right, 
+        height: boxHeight,
+        width: boxWidth
+      }
+    });
   }
 
   onInputChange = (event) => {
@@ -43,15 +80,14 @@ class App extends Component {
 
   onButtonSubmit = () => {
     console.log('click');
-    this.setState({ imageUrl: this.state.input})
+    this.setState({ imageUrl: this.state.input, isPending: true })
 
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
     .then(response => {
-      console.log(response)
+      this.setState({ isPending: false })
+      this.calculateFaceLocation(response)
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(err => console.log(err))
   }
 
   render() {
@@ -74,7 +110,7 @@ class App extends Component {
             onClick={this.onButtonSubmit}
            />
         </div>
-        <FaceRecognition imageUrl={this.state.imageUrl}/>
+          <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
       </div>
     );
   }

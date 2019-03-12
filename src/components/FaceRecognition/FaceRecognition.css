@@ -1,0 +1,17 @@
+.container {
+    position: relative;
+}
+
+.container img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+.img-container { 
+    position: relative; 
+}
+
+.face-box {
+    border: 2px solid blue;
+    position: absolute;
+}
