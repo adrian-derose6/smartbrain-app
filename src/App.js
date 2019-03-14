@@ -42,8 +42,6 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-    console.log(data);
-    console.log(data.outputs[0].data.regions[0].region_info.bounding_box)
 
     const boundingBox = data.outputs[0].data.regions[0].region_info.bounding_box;
     const { right_col, left_col, top_row, bottom_row } = boundingBox;
@@ -54,22 +52,12 @@ class App extends Component {
 
     console.log(imageWidth, imageHeight);
 
-    const top = top_row * imageHeight;
-    const bottom = imageHeight - bottom_row * imageHeight;
-    const left = left_col * imageWidth;
-    const right= imageWidth - right_col * imageWidth;
-
-    const boxWidth = imageWidth - left - right;
-    const boxHeight= imageHeight - top - bottom;
-
     this.setState({
       boxDimensions: {
-        top,
-        bottom, 
-        left,
-        right, 
-        height: boxHeight,
-        width: boxWidth
+        top: top_row * imageHeight,
+        bottom: imageHeight - bottom_row * imageHeight, 
+        left: left_col * imageWidth,
+        right: imageWidth - right_col * imageWidth, 
       }
     });
   }
@@ -110,7 +98,7 @@ class App extends Component {
             onClick={this.onButtonSubmit}
            />
         </div>
-          <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
+        <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
       </div>
     );
   }
