@@ -7,6 +7,8 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
 
 import './App.css';
 
@@ -37,7 +39,8 @@ class App extends Component {
       boxDimensions: {
 
       },
-      isPending: false
+      route: 'signIn',
+      isSignedIn: false
     }
   }
 
@@ -62,6 +65,45 @@ class App extends Component {
     });
   }
 
+  onRouteChange = (route) => {
+    if (route === 'signIn') {
+      this.setState({ isSignedIn: false})
+    }
+    else if (route === 'main') {
+      this.setState({ isSignedIn: true })
+    }
+    this.setState({ route });
+  }
+
+  appRouter = () => {
+    switch (this.state.route) {
+      case 'signIn':
+        return (
+          <SignIn onRouteChange={this.onRouteChange}/>
+        );
+      case 'main':
+          return (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                <Logo />
+                <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
+              </div>
+                <Rank />
+                <ImageLinkForm 
+                  onInputChange={this.onInputChange}
+                  onClick={this.onButtonSubmit}
+                />
+
+              <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
+            </div>
+            );
+      case 'register':
+            return <Register onRouteChange={this.onRouteChange} />
+      default: 
+            return <SignIn onRouteChange={this.onRouteChange} />
+    }
+  }
+
   onInputChange = (event) => {
     this.setState({ input: event.target.value })
   }
@@ -84,21 +126,7 @@ class App extends Component {
         <Particles
           className='particles'
           params={particlesOptions} /> 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-          <Logo />
-          <Navigation />
-        </div>
-        <div>
-          
-        </div> 
-        <div>
-          <Rank />
-          <ImageLinkForm 
-            onInputChange={this.onInputChange}
-            onClick={this.onButtonSubmit}
-           />
-        </div>
-        <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
+        {this.appRouter()}
       </div>
     );
   }
