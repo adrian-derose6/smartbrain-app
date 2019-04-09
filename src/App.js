@@ -40,7 +40,15 @@ class App extends Component {
 
       },
       route: 'signIn',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id:'',
+        name: '',
+        email: '',
+        password: '',
+        entries: 0,
+        joined: ''
+      }
     }
   }
 
@@ -63,6 +71,18 @@ class App extends Component {
         right: imageWidth - right_col * imageWidth, 
       }
     });
+  }
+
+  loadUser = (user) => {
+    this.setState({ user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      entries: user.entries,
+      joined: user.joined
+    }});
+    console.log(this.state.user);
   }
 
   onRouteChange = (route) => {
@@ -98,7 +118,7 @@ class App extends Component {
             </div>
             );
       case 'register':
-            return <Register onRouteChange={this.onRouteChange} />
+            return <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
       default: 
             return <SignIn onRouteChange={this.onRouteChange} />
     }
