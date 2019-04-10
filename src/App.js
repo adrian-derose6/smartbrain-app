@@ -57,11 +57,8 @@ class App extends Component {
     const boundingBox = data.outputs[0].data.regions[0].region_info.bounding_box;
     const { right_col, left_col, top_row, bottom_row } = boundingBox;
     const image = document.getElementById('input-image');
-
     const imageWidth = Number(image.width);
     const imageHeight = Number(image.height);
-
-    console.log(imageWidth, imageHeight);
 
     this.setState({
       boxDimensions: {
@@ -99,7 +96,7 @@ class App extends Component {
     switch (this.state.route) {
       case 'signIn':
         return (
-          <SignIn onRouteChange={this.onRouteChange}/>
+          <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
         );
       case 'main':
           return (
@@ -108,7 +105,7 @@ class App extends Component {
                 <Logo />
                 <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange} />
               </div>
-                <Rank />
+                <Rank name={this.state.user.name} entries={this.state.user.entries} />
                 <ImageLinkForm 
                   onInputChange={this.onInputChange}
                   onClick={this.onButtonSubmit}
@@ -120,7 +117,7 @@ class App extends Component {
       case 'register':
             return <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
       default: 
-            return <SignIn onRouteChange={this.onRouteChange} />
+            return <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
     }
   }
 
@@ -129,11 +126,23 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-    console.log('click');
     this.setState({ imageUrl: this.state.input, isPending: true })
 
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
     .then(response => {
+      if (response) {
+        fetch('http://localhost:4000/image', {
+          method: 'put',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: this.state.user.id
+          })
+        })
+        .then(response => response.json())
+        .then(count => {
+          this.setState(Object.assign(this.state.user, { entries: count }))
+        })
+      }
       this.setState({ isPending: false })
       this.calculateFaceLocation(response)
     })
