@@ -32,8 +32,9 @@ class Register extends Component {
                 name: this.state.name
             })
         })
-        .then(response => console.log(response.json()))
+        .then(response => response.json())
         .then(user => {
+            console.log(user);
             if (user) {
                 this.props.loadUser(user);
                 this.props.onRouteChange('main');

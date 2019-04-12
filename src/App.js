@@ -36,9 +36,7 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
-      boxDimensions: {
-
-      },
+      boxDimensions: {},
       route: 'signIn',
       isSignedIn: false,
       user: {
@@ -53,7 +51,6 @@ class App extends Component {
   }
 
   calculateFaceLocation = (data) => {
-
     const boundingBox = data.outputs[0].data.regions[0].region_info.bounding_box;
     const { right_col, left_col, top_row, bottom_row } = boundingBox;
     const image = document.getElementById('input-image');
@@ -90,6 +87,7 @@ class App extends Component {
       this.setState({ isSignedIn: true })
     }
     this.setState({ route });
+    console.log(this.state.route)
   }
 
   appRouter = () => {
