@@ -1,2 +1,2 @@
 
-![Capture Image](/img/Capture.jpg?raw=true "Title")
+![Capture Image](./img/Capture.jpg?raw=true "Title")
