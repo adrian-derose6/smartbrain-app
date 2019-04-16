@@ -30,24 +30,26 @@ const particlesOptions = {
   }
 }
 
+const initialState = {
+  input: '',
+  imageUrl: '',
+  boxDimensions: {},
+  route: 'signIn',
+  isSignedIn: false,
+  user: {
+    id:'',
+    name: '',
+    email: '',
+    password: '',
+    entries: 0,
+    joined: ''
+  }
+}
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      boxDimensions: {},
-      route: 'signIn',
-      isSignedIn: false,
-      user: {
-        id:'',
-        name: '',
-        email: '',
-        password: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState;
   }
 
   calculateFaceLocation = (data) => {
@@ -81,7 +83,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signIn') {
-      this.setState({ isSignedIn: false})
+      this.setState(initialState);
     }
     else if (route === 'main') {
       this.setState({ isSignedIn: true })
@@ -108,10 +110,9 @@ class App extends Component {
                   onInputChange={this.onInputChange}
                   onClick={this.onButtonSubmit}
                 />
-
-              <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
+                <FaceRecognition imageUrl={this.state.imageUrl} boxDimensions={this.state.boxDimensions} />
             </div>
-            );
+          );
       case 'register':
             return <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
       default: 
@@ -140,6 +141,7 @@ class App extends Component {
         .then(count => {
           this.setState(Object.assign(this.state.user, { entries: count }))
         })
+        .catch(console.log)
       }
       this.setState({ isPending: false })
       this.calculateFaceLocation(response)
